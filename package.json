@@ -1,0 +1,17 @@
+{
+  "name": "mini-svc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dockerfile 教学用最小服务：一个能读环境变量的 Node HTTP 服务",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

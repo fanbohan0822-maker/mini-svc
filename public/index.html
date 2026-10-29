@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mini-svc</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #0f1115; color: #e8e8ec; margin: 0; padding: 48px 24px; }
+    .wrap { max-width: 680px; margin: 0 auto; }
+    h1 { font-size: 24px; font-weight: 500; margin: 0 0 4px; }
+    .sub { color: #8b8f9a; font-size: 13px; margin-bottom: 28px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #23262e; }
+    th { color: #8b8f9a; font-weight: 400; font-size: 12px; width: 160px; }
+    td { color: #d5d8e0; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+    .pill { display: inline-block; background: #1d3a2a; color: #7ee2a8; border-radius: 999px; padding: 3px 12px; font-size: 12px; }
+    .foot { margin-top: 28px; color: #6b6f7a; font-size: 12px; line-height: 1.9; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>mini-svc</h1>
+    <div class="sub">这个页面由容器里的 Node 服务返回 <span class="pill" id="status">检测中</span></div>
+    <table id="info"></table>
+    <div class="foot">
+      试试点 <a href="/api/info" style="color:#7ee2a8">/api/info</a> 看原始 JSON，
+      或 <a href="/health" style="color:#7ee2a8">/health</a> 看健康检查返回值。
+    </div>
+  </div>
+  <script>
+    fetch('/api/info').then(r => r.json()).then(d => {
+      document.getElementById('status').textContent = '运行中';
+      const t = document.getElementById('info');
+      const labels = {
+        version: '应用版本 (APP_VERSION)',
+        buildTime: '构建时间 (ARG → ENV)',
+        greeting: '问候语 (GREETING)',
+        node: 'Node 版本',
+        uptimeSeconds: '已运行秒数',
+        hostname: '容器 hostname',
+        pid: '容器内 PID'
+      };
+      for (const k of Object.keys(labels)) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<th>' + labels[k] + '</th><td>' + d[k] + '</td>';
+        t.appendChild(tr);
+      }
+    }).catch(() => {
+      document.getElementById('status').textContent = '接口异常';
+    });
+  </script>
+</body>
+</html>
