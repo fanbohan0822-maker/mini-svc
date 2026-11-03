@@ -1,5 +1,7 @@
 # mini-svc
 
+[![CI](https://github.com/fanbohan0822-maker/mini-svc/actions/workflows/ci.yml/badge.svg)](https://github.com/fanbohan0822-maker/mini-svc/actions/workflows/ci.yml)
+
 一个用来学 Docker 的最小 Node 服务。没有数据库、没有外部依赖，直接能跑。
 
 ## 接口
@@ -18,6 +20,19 @@
 | `APP_VERSION` | `dev` | 应用版本，Dockerfile 里用 ENV 设默认值 |
 | `GREETING` | 提示语 | 运行时通过 `-e` 传入 |
 | `APP_BUILD_TIME` | `unknown` | 由构建参数 `BUILD_TIME` 注入 |
+
+## 从 GitHub 克隆到本地
+
+```bash
+git clone https://github.com/fanbohan0822-maker/mini-svc.git
+cd mini-svc
+npm ci
+npm start
+```
+
+然后访问 http://localhost:3000
+
+`npm ci` 严格按照 `package-lock.json` 安装，版本和 CI 里跑的完全一致；只有本地开发需要升级依赖时才用 `npm install`。
 
 ## 本地直接跑
 

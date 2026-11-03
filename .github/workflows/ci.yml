@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: 依赖安装与健康检查
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: 按 lock 文件安装依赖
+        run: npm ci
+
+      - name: 语法检查
+        run: node --check src/server.js
+
+      - name: 启动服务并校验 /health
+        run: |
+          node src/server.js &
+          SERVER_PID=$!
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:3000/health > /dev/null; then
+              break
+            fi
+            sleep 0.5
+          done
+          BODY=$(curl -sf http://127.0.0.1:3000/health)
+          echo "健康检查响应: $BODY"
+          echo "$BODY" | grep -q '"status":"ok"'
+          kill "$SERVER_PID"
